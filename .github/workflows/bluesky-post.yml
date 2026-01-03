@@ -10,6 +10,7 @@ on:
 jobs:
   bluesky-post:
     runs-on: ubuntu-latest
+    environment: github-pages
     steps:
       - name: Feed to Bluesky
         uses: joschi/blueskyfeedbot@v0.0.4
