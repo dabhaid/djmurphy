@@ -2,7 +2,7 @@
 const today = new Date();
 ---
 
-<footer>
+<footer class="h-card">
   <svg
     class="footer-svg"
     width="139"
@@ -56,7 +56,9 @@ const today = new Date();
       fill="var(--accent-primary)"></path>
   </svg>
 
-  &copy; {today.getFullYear()} David Murphy. All rights reserved.
+  &copy; {today.getFullYear()}
+  <span class="p-name">David Murphy</span>. All rights reserved.
+  <a href="/" class="u-url u-uid" style="display:none;">David Murphy</a>
   <div class="social-links">
     <!-- <a href="https://m.webtoo.ls/@astro" target="_blank" rel="me">
       <span class="sr-only">Follow Astro on Mastodon</span>
