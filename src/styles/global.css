@@ -203,7 +203,7 @@ hr {
 
 @font-face {
 	font-family: 'urgc';
-	src: url('/fonts/UrchloGC-Normal-dlig.woff2') format('woff2');
+	src: url('../fonts/UrchloGC-Normal-dlig.woff2') format('woff2');
 	font-weight: normal;
 	font-style: normal;
 	font-display: swap;
@@ -211,7 +211,7 @@ hr {
 
 @font-face {
 	font-family: 'urgc';
-	src: url('/fonts/UrchloGC-NormalItalic-dlig.woff2') format('woff2');
+	src: url('../fonts/UrchloGC-NormalItalic-dlig.woff2') format('woff2');
 	font-weight: normal;
 	font-style: italic;
 	font-display: swap;
@@ -219,7 +219,7 @@ hr {
 
 @font-face {
 	font-family: 'urgc';
-	src: url('/fonts/UrchloGC-Bold-dlig.woff2') format('woff2');
+	src: url('../fonts/UrchloGC-Bold-dlig.woff2') format('woff2');
 	font-weight: bold;
 	font-style: normal;
 	font-display: swap;
