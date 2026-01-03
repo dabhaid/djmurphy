@@ -1,0 +1,19 @@
+{
+  "subject": "acct:djmurphy.net@djmurphy.net",
+  "aliases": [
+    "https://bsky.app/profile/djmurphy.net",
+    "https://bsky.brid.gy/ap/did:plc:5s2qvur5aegzanonbhsebnkd"
+  ],
+  "links": [
+    {
+      "rel": "self",
+      "type": "application/activity+json",
+      "href": "https://bsky.brid.gy/ap/did:plc:5s2qvur5aegzanonbhsebnkd"
+    },
+    {
+      "rel": "http://webfinger.net/rel/profile-page",
+      "type": "text/html",
+      "href": "https://bsky.app/profile/djmurphy.net"
+    }
+  ]
+}
