@@ -16,6 +16,6 @@ jobs:
         with:
           rss-feed: "https://djmurphy.net/rss.xml"
           template: "New post: {{item.title}} {{item.link}}"
-          bsky-handle: ${{ secrets.BLUESKY_IDENTIFIER }}
-          bsky-password: ${{ secrets.BLUESKY_PASSWORD }}
+          username: ${{ secrets.BLUESKY_IDENTIFIER }}
+          password: ${{ secrets.BLUESKY_PASSWORD }}
           cache-file: "cache.json"
