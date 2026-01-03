@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Feed to Bluesky
-        uses: joschi/blueskyfeedbot@v2.4.0
+        uses: joschi/blueskyfeedbot@v0.0.4
         with:
           rss-feed: "https://djmurphy.net/rss.xml"
           template: "New post: {{item.title}} {{item.link}}"
