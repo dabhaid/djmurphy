@@ -1,0 +1,23 @@
+---
+import { render, getCollection, type CollectionEntry } from "astro:content";
+import BlogPost from "../../layouts/BlogPost.astro";
+import Gaeilge from "../../components/Gaeilge.astro";
+import { extractLinks } from "../../utils/links";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: post,
+  }));
+}
+type Props = CollectionEntry<"blog">;
+
+const post = Astro.props;
+const { Content } = await render(post);
+const links = extractLinks(post.body || "");
+---
+
+<BlogPost {...post.data} links={links}>
+  <Content components={{ Gaeilge }} />
+</BlogPost>

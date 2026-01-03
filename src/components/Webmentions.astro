@@ -1,0 +1,169 @@
+---
+interface Webmention {
+  "wm-property": "like-of" | "repost-of" | "in-reply-to" | "mention-of";
+  "wm-id": number;
+  url: string;
+  author?: {
+    name?: string;
+    photo?: string;
+    url?: string;
+  };
+  content?: {
+    text?: string;
+    html?: string;
+  };
+}
+
+const { target } = Astro.props;
+
+// Fetch mentions from webmention.io
+const url = `https://webmention.io/api/mentions.jf2?target=${target}`;
+let mentions: Webmention[] = [];
+
+try {
+  const response = await fetch(url);
+  if (response.ok) {
+    const data = await response.json();
+    mentions = data.children || [];
+  }
+} catch (error) {
+  console.error("Error fetching webmentions:", error);
+}
+
+// Filter mentions by type
+const likes = mentions.filter((m) => m["wm-property"] === "like-of");
+const reposts = mentions.filter((m) => m["wm-property"] === "repost-of");
+const replies = mentions.filter((m) =>
+  ["in-reply-to", "mention-of"].includes(m["wm-property"]),
+);
+---
+
+<section class="webmentions">
+  {
+    mentions.length > 0 ? (
+      <div class="mentions-container">
+        <h3>Interactions</h3>
+
+        {(likes.length > 0 || reposts.length > 0) && (
+          <div class="mentions-summary">
+            {likes.length > 0 && (
+              <div class="likes">
+                <strong>{likes.length}</strong>{" "}
+                {likes.length === 1 ? "Like" : "Likes"}
+              </div>
+            )}
+            {reposts.length > 0 && (
+              <div class="reposts">
+                <strong>{reposts.length}</strong>{" "}
+                {reposts.length === 1 ? "Repost" : "Reposts"}
+              </div>
+            )}
+          </div>
+        )}
+
+        {replies.length > 0 && (
+          <ul class="mentions-list">
+            {replies.map((mention) => (
+              <li class="mention-item">
+                <div class="mention-author">
+                  {mention.author?.photo && (
+                    <img
+                      src={mention.author.photo}
+                      alt={mention.author.name}
+                      class="author-photo"
+                    />
+                  )}
+                  <a
+                    href={mention.author?.url || mention.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {mention.author?.name || "Anonymous"}
+                  </a>
+                  <span class="mention-type">
+                    {mention["wm-property"] === "in-reply-to"
+                      ? "replied"
+                      : "mentioned this"}
+                  </span>
+                </div>
+                {mention.content?.text && (
+                  <div class="mention-content">{mention.content.text}</div>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    ) : (
+      <p class="no-mentions">
+        No webmentions yet. Link to this post to see your mention here!
+      </p>
+    )
+  }
+</section>
+
+<style>
+  .webmentions {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(var(--gray-light), 0.5);
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--color-primary);
+  }
+
+  .mentions-summary {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .mentions-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .mention-item {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(var(--gray-light), 0.2);
+  }
+
+  .mention-author {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .author-photo {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .mention-type {
+    color: rgb(var(--gray));
+    font-style: italic;
+  }
+
+  .mention-content {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    background: rgba(var(--gray-light), 0.1);
+    padding: 0.8rem;
+    border-radius: 8px;
+  }
+
+  .no-mentions {
+    font-style: italic;
+    color: rgb(var(--gray));
+    font-size: 0.9rem;
+  }
+</style>

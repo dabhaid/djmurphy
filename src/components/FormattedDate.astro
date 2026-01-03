@@ -1,0 +1,22 @@
+---
+interface Props {
+  date: Date;
+  class?: string;
+}
+
+const { date } = Astro.props;
+---
+
+<time datetime={date.toISOString()} class={Astro.props.class}>
+  {
+    date.getFullYear().toString().slice(-2) +
+      (date.getMonth() + 1).toString().padStart(2, "0") +
+      date.getDate().toString().padStart(2, "0")
+  }
+</time>
+
+<style>
+  time {
+    font-family: "Space Mono", monospace;
+  }
+</style>

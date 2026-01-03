@@ -1,0 +1,157 @@
+---
+import type { CollectionEntry } from "astro:content";
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import FormattedDate from "../components/FormattedDate.astro";
+import Webmentions from "../components/Webmentions.astro";
+
+type Props = CollectionEntry<"blog">["data"] & {
+  links?: { text: string; url: string }[];
+};
+
+const { title, description, pubDate, updatedDate, heroImage, tags } =
+  Astro.props;
+import Tags from "../components/Tags.astro";
+---
+
+<html lang="en">
+  <head>
+    <BaseHead title={title} description={description} />
+    <style>
+      main {
+        width: calc(100% - 2em);
+        max-width: 100%;
+        margin: 0;
+      }
+
+      .hero-image {
+        width: 100%;
+      }
+
+      .hero-image img {
+        display: block;
+        margin: 0 auto;
+        border-radius: 12px;
+        box-shadow: var(--box-shadow);
+      }
+
+      .prose {
+        width: 720px;
+        max-width: calc(100% - 2em);
+        margin: auto;
+        padding: 1em;
+      }
+
+      .title {
+        margin-bottom: 1em;
+        padding: 1em 0;
+        text-align: left;
+        line-height: 1;
+      }
+
+      .title h1 {
+        margin: 0 0 0.5em 0;
+      }
+
+      .date {
+        margin-bottom: 0.5em;
+        color: rgb(var(--gray));
+      }
+
+      .last-updated-on {
+        font-style: italic;
+      }
+
+      .links-section {
+        margin-top: 3em;
+        padding-top: 2em;
+        border-top: 1px solid rgba(var(--gray-light), 0.5);
+      }
+
+      .links-section h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: var(--color-primary);
+      }
+
+      .links-section ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .links-section li {
+        margin-bottom: 0.8rem;
+        font-family: var(--font-mono, monospace);
+        font-size: 0.9rem;
+      }
+
+      .links-section a {
+        text-decoration: none;
+        color: var(--color-primary);
+        border-bottom: 1px solid transparent;
+        transition: border-color 0.2s ease;
+      }
+
+      .links-section a:hover {
+        border-bottom-color: var(--color-primary);
+      }
+
+      .link-index {
+        color: rgb(var(--gray));
+        margin-right: 0.5rem;
+        user-select: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <Header />
+    <main>
+      <article class="h-entry">
+        <div class="hero-image">
+          {
+            heroImage && (
+              <img width={1020} height={510} src={heroImage} alt="" />
+            )
+          }
+        </div>
+        <div class="prose">
+          <div class="title">
+            <div class="date">
+              <FormattedDate date={pubDate} class="dt-published" />
+              {
+                updatedDate && (
+                  <div class="last-updated-on">
+                    Last updated on
+                    <FormattedDate date={updatedDate} />
+                  </div>
+                )
+              }
+            </div>
+            <h1 class="p-name">{title}</h1>
+            <a class="u-url" href={Astro.url} style="display:none;">{title}</a>
+            <div class="p-author h-card" style="display:none;">
+              <a class="u-url p-name" rel="author" href={Astro.site}
+                >David Murphy</a
+              >
+            </div>
+            <hr />
+          </div>
+          {
+            tags && (
+              <div style="margin-bottom: 1em;">
+                <Tags tags={tags} />
+              </div>
+            )
+          }
+          <div class="e-content">
+            <slot />
+          </div>
+          <Webmentions target={Astro.url} />
+        </div>
+      </article>
+    </main>
+    <Footer />
+  </body>
+</html>

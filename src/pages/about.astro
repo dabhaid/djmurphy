@@ -1,0 +1,38 @@
+---
+import Layout from "../layouts/BlogPost.astro";
+import localProfileImage from '../content/images/gem_profile.png';
+---
+
+<Layout title="About Me" description="Answering: who the hell is this person?" pubDate={new Date("Jan 1 2026")}>
+	<div class="h-card">
+		<a class="u-url p-name" href={Astro.url} style="display:none;">David Murphy</a>
+		<img class="u-photo profile-pic" src={localProfileImage.src} alt="David Murphy" />
+		<style>
+			.profile-pic {
+				display: block;
+				height: 400px;
+				border-radius: 12px;
+				margin-bottom: 2em;
+				box-shadow: var(--box-shadow);
+			}
+		</style>
+		<p class="p-note">
+			I'm Irish. I'm middle-aged. I like bikes and guitars.
+			I'm a generalist, I like to learn, I like to make and I like to experiment.
+		</p>
+		<p>
+			Professionally I work at Google in San Francisco as a "UX Engineer" a design/eng hybrid class.
+			I work on Developer Experience for the <a href="https://fuchsia.dev">Fuchsia</a> operating system.
+		</p>
+		<p>
+			I've been an early employee and singleton R&D team at a consumer electronics startup, a mixed and augmented
+			reality research at Nokia Research Center (where I also dabbled a bit with brain-computer interfaces), I've
+			an MSc in Computer & Information Science from Aalto University, a BA, BAI in Computer Engineering from
+			Trinity College Dublin, and if we're being completionist a Diploma in Music from the Victoria College of
+			Music, London.
+		</p>
+		<p>
+			Not least I'm a parent of multiples.
+		</p>
+	</div>
+</Layout>

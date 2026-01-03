@@ -1,0 +1,232 @@
+@import url('https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:ital,wght@0,200..800;1,200..800&family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&family=Monoton&family=Space+Grotesk&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap&family=Space+Grotesk:wght@300..700&display=swap');
+
+:root {
+
+	--gray: 96, 115, 159;
+	--gray-light: 229, 233, 240;
+	--gray-dark: 34, 41, 57;
+	--black: 0, 0, 0;
+	--gray-gradient: rgba(var(--white), 50%), #fff;
+	--box-shadow: 0 2px 6px rgba(var(--gray), 25%), 0 8px 24px rgba(var(--gray), 33%),
+		0 16px 32px rgba(var(--gray), 33%);
+}
+
+body {
+	font-family: 'Space Grotesk', sans-serif;
+	margin: 0;
+	padding: 0;
+	text-align: left;
+	background: linear-gradient(var(--gray-gradient)) no-repeat;
+	background-size: 100% 600px;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+	color: var(--color-primary);
+	font-size: 20px;
+	line-height: 1.7;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-primary: #1e1e1e;
+		--color-primary-rgb: 30, 30, 30;
+		--color-secondary: #e1e1e1;
+		--color-secondar-rgb: 225, 225, 225;
+		--accent-primary: #CC3F00;
+		--accent-secondary: #FF4F00;
+	}
+}
+
+@media (prefers-color-scheme: light) {
+	:root {
+		--color-primary: #e1e1e1;
+		--color-primary-rgb: 225, 225, 225;
+		--color-secondary: #1e1e1e;
+		--color-secondary-rgb: 30, 30, 30;
+		--accent-primary: #ff4f00;
+		--accent-secondary: #CC3F00;
+	}
+}
+
+body {
+	box-sizing: border-box;
+	margin: 0;
+	background-color: var(--color-primary);
+	color: var(--color-secondary);
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+main {
+	width: 720px;
+	max-width: calc(100% - 2em);
+	margin: auto;
+	padding: 3em 1em;
+	flex: 1;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	margin: 0 0 0.5rem 0;
+	color: var(--color-secondary);
+	line-height: 1.2;
+}
+
+h1 {
+	font-size: 3.052em;
+}
+
+h2 {
+	font-size: 2.441em;
+}
+
+h3 {
+	font-size: 1.953em;
+}
+
+h4 {
+	font-size: 1.563em;
+}
+
+h5 {
+	font-size: 1.25em;
+}
+
+strong,
+b {
+	font-weight: 700;
+}
+
+a {
+	color: var(--color-secondary);
+}
+
+a:hover {
+	color: var(--accent-primary);
+}
+
+p {
+	margin-bottom: 1em;
+}
+
+.prose p {
+	margin-bottom: 2em;
+}
+
+textarea {
+	width: 100%;
+	font-size: 16px;
+}
+
+input {
+	font-size: 16px;
+}
+
+table {
+	width: 100%;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+	border-radius: 8px;
+}
+
+code {
+	padding: 2px 5px;
+	background-color: rgb(var(--black));
+	border-radius: 2px;
+	font-family: 'Space Mono', monospace;
+	color: white;
+	font-size: 16px;
+}
+
+pre {
+	padding: 1.5em;
+	border-radius: 8px;
+	font-family: 'Space Mono', monospace;
+	line-height: 1.5;
+}
+
+pre>code {
+	background-color: transparent;
+	padding: 0;
+}
+
+blockquote {
+	border-left: 4px solid var(--accent);
+	padding: 0 0 0 20px;
+	margin: 0px;
+	font-size: 1.333em;
+}
+
+hr {
+	border: none;
+	/* border-top: 1px solid rgb(var(--color-secondary-rgb)); */
+}
+
+.profile-pic {
+	align-content: left;
+}
+
+@media (max-width: 720px) {
+	body {
+		font-size: 18px;
+	}
+
+	main {
+		padding: 1em;
+	}
+}
+
+.sr-only {
+	border: 0;
+	padding: 0;
+	margin: 0;
+	position: absolute !important;
+	height: 1px;
+	width: 1px;
+	overflow: hidden;
+	/* IE6, IE7 - a 0 height clip, off to the bottom right of the visible 1px box */
+	clip: rect(1px 1px 1px 1px);
+	/* maybe deprecated but we need to support legacy browsers */
+	clip: rect(1px, 1px, 1px, 1px);
+	/* modern browsers, clip-path works inwards from each corner */
+	clip-path: inset(50%);
+	/* added line to stop words getting smushed together (as they go onto separate lines and some screen readers do not understand line feeds as a space */
+	white-space: nowrap;
+}
+
+@font-face {
+	font-family: 'urgc';
+	src: url('/fonts/UrchloGC-Normal-dlig.woff2') format('woff2');
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'urgc';
+	src: url('/fonts/UrchloGC-NormalItalic-dlig.woff2') format('woff2');
+	font-weight: normal;
+	font-style: italic;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'urgc';
+	src: url('/fonts/UrchloGC-Bold-dlig.woff2') format('woff2');
+	font-weight: bold;
+	font-style: normal;
+	font-display: swap;
+}
+
+gaeilge {
+	font-family: 'urgc', sans-serif;
+	font-variant-ligatures: discretionary-ligatures;
+	font-feature-settings: "ss01" 1;
+}

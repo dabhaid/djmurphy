@@ -1,0 +1,136 @@
+---
+title: "Adding insular script like it's 1626"
+description: "Adding ancient insular script to a modern site"
+pubDate: "Jan 1 2026"
+tags: ["gaeilge", "UX", "typography", "a11y"]
+---
+
+I'm a generation removed from when Irish children were taught to read and write in insular Irish script the Cló Gaelach.
+
+<a href="https://www.ninearrow.com/shop/p/clo-gaelach">
+<img src="/main-web-clo-gaelach.jpg" alt="artistic print of the Irish alphabet in old script"/>
+</a>
+Here's a beautiful print of the full alphabet in old script, with a couple of extra symbols used for etcetera, from <a href="https://www.ninearrow.com/">Nine Arrow</a>, who has also <a href="https://www.ninearrow.com/blog/clo-gaelach-project">fallen down this rabbit hole</a>.
+
+While my parents' primary association with it are literally being rapped on the knuckles for getting it wrong, for me it's the type of official signage on old buildings and at historical sites - it's antiquity and heritage. (For more examples, check out the <a href="https://nicolevolmering.ie/closcape/">CLÓSCAPE Project</a>, dedicated to cataloging use around Dublin.)
+
+<img src="/cros-an-araldaig.jpg" alt="Engraving over a school in Ireland in old Irish script" width="1008" height="194" />
+
+The "old script" was created when medieval monks evolved the latin script to encode the _sound_ of Irish. It uses a dot over a consonant to indicate it should soften according to grammatical rules.
+
+Few printers had insular typesets and typewriters were rare and difficult to use, with modifier dots rather than distinct characters. Applying them required typing the letter, then backspace, then typing the dot - not very ergonomic. This made producing print slow and expensive.
+
+<figure>
+<img src="/gaelic_typewriter.jpg" alt="A typewriter with Gaelic characters" height="400"/>
+<figcaption>A Gaelic typewriter. (Image via <a href="https://www.galwaycitymuseum.ie/">Galway City Museum</a>)</figcaption>
+</figure>
+
+The solution was to switch to using a pure latin character set, with the dot being replaced with a "h" after the letter. This is why you get Irish names like "Sadhbh" that improbably rhyme with "five". It's much less phonetic because you have to look at the preceeding letter to understand what the "h" modifier is going to do, and you have to process letters in groups to understand what sound they make.
+
+I'm a bit wistful that something so distinctive and beautiful and endemic has been lost, and (not having to learn to write another character set) to my mind the old script's approach of preserving the majority word shape while still capturing the phonetic content is a better writing system. I have been thinking about how use modern tools to add the old back into modern media gracefully. There have been typographers making Gaelic fonts for a long time - <a href="https://www.gaelchlo.com">gaelchlo.com</a> is the central repository of these, but we also need to perform some letter substitutions to really achieve the old script.
+
+From an accessibility and data portability perspective the ship has sailed. While Google Translate can (impressively and improbably) handle Cló Gaelach, other Irish language reference sites of record like <a href="https://teanglann.ie">teanglann.ie</a> or <a href="https://abair.ie">abair.ie</a> cannot. There is a "ga" language tag you can use to indicate to screen readers that text is in Irish, but I wouldn't expect Irish text in Cló Gaelach to work with the Irish language NVDA screenreader plugin (I don't have a copy of Windows to check though). So, while we might like to visually replace the "aitches" to achieve the look of the old script, we should preserve the original text.
+
+Luckily there is a feature in OTF typefaces called <a href="https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/opentype-font-features#ligatures">"discretionary ligatures"</a> - these allow us to modify a script font to define optional ligatures that can be selected on or off, that won't mess with the original text. It seemed like adding some ligatures to the relevant consonant-séimhiú pairs might work.
+
+I gave it a try - I opened my favorite Cló Gaelach font <a href="https://www.gaelchlo.com/urgc.html">Úrchló GC</a> using <a href="https://fontforge.org">Font Forge</a> and:
+
+1. Added a discretionary ligature table
+<img src="/ff_1.png" alt="FontForge screenshot of adding a discretionary ligature table"/>
+
+2. Added a subtable for substitutions - replace all the relevant consonant + h with the dotted constant. (And for flair replace the latin etcetera (&) with the <a href="https://en.wiktionary.org/wiki/%E2%81%8A">Tironian et</a> - a piece of shorthand credited to <a href="https://en.wikipedia.org/wiki/Marcus_Tullius_Tiro">Tiro</a>, scribe of <a href="https://en.wikipedia.org/wiki/Cicero">Cicero</a>, and still in use in Irish today.)
+<img src="/ff_2.png" alt="FontForge screenshot of adding a subtable for substitutions"/>
+
+
+3. Because this is discretionary and so off by default, enable it by setting the font-variant-ligatures:
+
+```css
+gaeilge {
+  font-family: "urgc", sans-serif;
+  font-variant-ligatures: discretionary-ligatures;
+}
+```
+... and <Gaeilge>feidhmíonn sé!</Gaeilge> - it works!
+This approach means that while the user sees the ligatures, the underlying text is still preserved for copy-paste and presentation to screen readers.
+
+Ok, but you might say whatever about sprinkling Irish on a website not really about the Irish language, including it in an ancient ableit beautiful script that's niche even in Ireland might be a little self-indulgent. To which I say it might <a href="https://resonantcomputing.org/">resonate</a> with a few people, and it's fun and you've already agreed it's beautiful but ok, I hear you. To preserve the flow for non-Irish readers, I'm playing with repurposing the HTML `<ruby>` element. These are ordinarily used to <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/ruby">give pronunciation hints for east-Asian scripts</a>, but for right now this seems like an interesing way to preserve reading flow for the <Gaeilge translation="couple of words">cúpla focail</Gaeilge> of Irish I'm ever liable to use.
+
+Hmm, but what about screen readers? Well, trying to replicate the visual approach, which is to give priority to the gaelic script over the translation, I decided to have screenreaders speak "[the Irish text] meaning: [translation]". It turns out the `<ruby>` element does not have defined screenreader behavior yet, and wanting to provide both `lang="ga"` for the gaelic text and `lang="en"` for the translation out of principle was a bit tricky, you can see (and judge) my approach below. 
+I'm using Astro as a blogging framework, it allows me to define components that I can use like HTML elements. My Gaeilge.astro component looks like
+
+```html
+<!-- Gaeilge.astro -->
+---
+interface Props {
+  translation?: string;
+}
+
+const { translation } = Astro.props;
+const slotContent = (await Astro.slots.render("default")).trim();
+const plainText = slotContent.replace(/<[^>]*>/g, "");
+---
+
+<span class="sr-only">
+  <span lang="ga">{plainText}</span>
+  {translation && <span lang="en"> (meaning: {translation})</span>}
+</span>
+<ruby aria-hidden="true">
+  <span class="gaeilge-text" lang="ga" set:html={slotContent} />
+  {
+    translation && (
+      <rp>(</rp>
+      <rt>{translation}</rt>
+      <rp>)</rp>
+    )
+  }
+</ruby>
+
+<style>
+  ruby > rt {
+    text-align: left;
+    font-weight: lighter;
+    font-size: 0.75em;
+  }
+  .gaeilge-text {
+    font-family: "urgc", sans-serif;
+    font-variant-ligatures: discretionary-ligatures;
+    font-feature-settings: "ss01" 1;
+  }
+</style>
+```
+<br/>
+I include this in my <code>[..slug].astro</code> file:
+
+```html
+<!-- [..slug].astro -->
+---
+import Gaeilge from '../../components/Gaeilge.astro';
+... stuff ...
+<BlogPost {...post.data}>
+  <Content components={{ Gaeilge }} />
+</BlogPost>
+```
+
+This allows me to write
+
+```html
+<Gaeilge translation="welcome">Failté romhait</Gaeilge>
+```
+
+in my blog markdown on any .mdx blog post, and to produce somethine like:
+
+```
+<span class="sr-only">
+  <span lang="ga">Fáilte romhait</span>
+  <span lang="en"> (meaning: Welcome)</span>
+</span>
+<ruby>
+  <span lang="ga">Fáilte romhait</span>
+  <rp>(</rp><rt>Welcome</rt><rp>)</rp>
+</ruby>
+```
+on the actual page, resulting in the english-over-script look that's screenreader-friendly: <Gaeilge translation="welcome">Failté romhait.</Gaeilge>
+
+As an aside I wanted to try blogging again to get back to the spirit of the "old internet" from pre-social media. I don't know why this topic is where I started, but in digging into the Cló Gaelach I discovered and enjoyed a number of other blogs: <a href="https://www.ninearrow.com/blog/clo-gaelach-project">a talented graphic designer exploring the type</a>, interesting material about <a href="https://johnjburnslibrary.wordpress.com/2022/09/19/flann-obrien-and-the-irish-typewriter/">Gaelic</a> <a href="https://www.evertype.com/celtscript/type-keys.html">typewriters</a>, <a href="https://www.libfocus.com/2020/04/cataloguing-older-irish-language.html"> scholarly material</a> on the <a href="https://www.dbnl.org/tekst/_gul005199001_01/_gul005199001_01_0004.php">origins of the typeface</a> as a <a href="https://www.dib.ie/biography/kearney-john-o-cearnaigh-sean-a4413">tool for religious persuasion</a>, and its <a href="https://www.ustc.ac.uk/news/defining-the-early-modern-irish-language-micheal-o-cleirighs-focloir-no-sanasan">connection with Leuven</a>. Almost none of this information is surfaced by searches for Google Books or Scholar, nor is it on Wikipedia. Most of it is hearteningly from the 2020s. _This_ is the web I want!
+
+As a bonus I got to play with some accessibility and UX problems and now have a reusable element that allows me to `sprinkle the site with some idiosyncratic vernacular design elements that, for me, capture a little of wild-west spirit of the Geocities days, but with the more responsible accessibility and data portability considerations of the modern mature web.

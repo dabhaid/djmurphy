@@ -1,0 +1,38 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Gaeilge from '../components/Gaeilge.astro';
+
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+---
+
+<!doctype html>
+<html lang="en">
+
+<head>
+
+	<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+</head>
+
+<body>
+	<Header />
+	<main>
+		<h1>
+			<Gaeilge translation="Welcome">Fáilte romhat</Gaeilge>
+		</h1>
+		<p>
+			In the spirit of being the change you want to see in the world, and with a shot of inspiration enough to
+			achieve activation energy from
+			<a href="https://resonantcomputing.org">Resonant Computing</a>, I've decided to add a old-school personal
+			website to the open web.
+		</p>
+		<p>
+			No: subscriptions, ads, spam, popups.
+			Yes: webmentions, Bridgy Fed, IndieWeb good things.
+		</p>
+	</main>
+	<Footer />
+</body>
+
+</html>

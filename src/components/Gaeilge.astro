@@ -1,0 +1,37 @@
+---
+interface Props {
+  translation?: string;
+}
+
+const { translation } = Astro.props;
+const slotContent = (await Astro.slots.render("default")).trim();
+const plainText = slotContent.replace(/<[^>]*>/g, "");
+---
+
+<span class="sr-only">
+  <span lang="ga">{plainText}</span>
+  {translation && <span lang="en"> (meaning: {translation})</span>}
+</span>
+<ruby aria-hidden="true">
+  <span class="gaeilge-text" lang="ga" set:html={slotContent} />
+  {
+    translation && (
+      <rp>(</rp>
+      <rt>{translation}</rt>
+      <rp>)</rp>
+    )
+  }
+</ruby>
+
+<style>
+  ruby > rt {
+    text-align: left;
+    font-weight: lighter;
+    font-size: 0.75em;
+  }
+  .gaeilge-text {
+    font-family: "urgc", sans-serif;
+    font-variant-ligatures: discretionary-ligatures;
+    font-feature-settings: "ss01" 1;
+  }
+</style>
