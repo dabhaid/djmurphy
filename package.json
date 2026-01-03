@@ -13,7 +13,10 @@
     "@astrojs/mdx": "^4.3.13",
     "@astrojs/rss": "^4.0.14",
     "@astrojs/sitemap": "^3.6.0",
+    "@atproto/api": "^0.18.9",
     "astro": "^5.16.6",
+    "html-entities": "^2.6.0",
+    "rss-parser": "^3.13.0",
     "typescript": "^5.9.3"
   }
 }

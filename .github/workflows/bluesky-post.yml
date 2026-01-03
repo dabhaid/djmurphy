@@ -12,11 +12,28 @@ jobs:
     runs-on: ubuntu-latest
     environment: github-pages
     steps:
-      - name: Feed to Bluesky
-        uses: joschi/blueskyfeedbot@v0.0.4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          rss-feed: "https://djmurphy.net/rss.xml"
-          template: "New post: {{item.title}} {{item.link}}"
-          username: ${{ secrets.BLUESKY_IDENTIFIER }}
-          password: ${{ secrets.BLUESKY_PASSWORD }}
-          cache-file: "cache.json"
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Post to Bluesky
+        run: node scripts/bluesky-post.js
+        env:
+          BLUESKY_IDENTIFIER: ${{ secrets.BLUESKY_IDENTIFIER }}
+          BLUESKY_PASSWORD: ${{ secrets.BLUESKY_PASSWORD }}
+
+      - name: Commit cache
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add cache.json
+          git commit -m "Update Bluesky post cache" || echo "No changes to commit"
+          git push
