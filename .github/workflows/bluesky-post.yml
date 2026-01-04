@@ -29,11 +29,3 @@ jobs:
         env:
           BLUESKY_IDENTIFIER: ${{ secrets.BLUESKY_IDENTIFIER }}
           BLUESKY_PASSWORD: ${{ secrets.BLUESKY_PASSWORD }}
-
-      - name: Commit cache
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add cache.json
-          git commit -m "Update Bluesky post cache" || echo "No changes to commit"
-          git push
