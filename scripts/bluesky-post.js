@@ -31,13 +31,27 @@ async function run() {
   for (const item of feed.items.reverse()) { // Process from oldest to newest
     if (!cache.includes(item.link)) {
       const decodedTitle = decode(item.title);
-      const text = `New post: ${decodedTitle} ${item.link}`;
+      const text = decodedTitle;
 
       console.log(`Posting: ${text}`);
       
       try {
         await agent.post({
           text: text,
+          facets: [
+            {
+              index: {
+                byteStart: 0,
+                byteEnd: Buffer.from(text).length,
+              },
+              features: [
+                {
+                  $type: 'app.bsky.richtext.facet#link',
+                  uri: item.link,
+                },
+              ],
+            },
+          ],
           createdAt: new Date().toISOString(),
         });
         cache.push(item.link);
