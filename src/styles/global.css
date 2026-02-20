@@ -158,10 +158,12 @@ pre>code {
 }
 
 blockquote {
-	border-left: 4px solid var(--accent);
+	border-left: 4px solid var(--accent-primary);
 	padding: 0 0 0 20px;
-	margin: 0px;
+	margin-left: 2rem;
+	margin-right: 2rem;
 	font-size: 1.333em;
+	font-style: italic;
 }
 
 hr {

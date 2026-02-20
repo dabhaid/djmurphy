@@ -3,6 +3,7 @@ import { render, getCollection, type CollectionEntry } from "astro:content";
 import BlogPost from "../../layouts/BlogPost.astro";
 import Gaeilge from "../../components/Gaeilge.astro";
 import { extractLinks } from "../../utils/links";
+import { YouTube } from "astro-embed";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
@@ -19,5 +20,5 @@ const links = extractLinks(post.body || "");
 ---
 
 <BlogPost {...post.data} links={links}>
-  <Content components={{ Gaeilge }} />
+  <Content components={{ Gaeilge, YouTube }} />
 </BlogPost>
