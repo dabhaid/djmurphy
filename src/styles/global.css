@@ -232,3 +232,45 @@ gaeilge {
 	font-variant-ligatures: discretionary-ligatures;
 	font-feature-settings: "ss01" 1;
 }
+
+/* Footnotes Styling (Match Webmentions structure) */
+.footnotes {
+	margin-top: 3rem;
+	padding-top: 2rem;
+	border-top: 1px solid rgba(var(--gray-light), 0.5);
+}
+
+.footnotes #footnote-label {
+	/* Undo .sr-only effects to make the heading visible */
+	position: static !important;
+	width: auto;
+	height: auto;
+	overflow: visible;
+	clip: auto;
+	clip-path: none;
+	white-space: normal;
+
+	font-size: 1.5rem;
+	/* Match webmentions h3 size */
+	color: var(--color-primary);
+	margin-bottom: 1rem;
+	display: block;
+}
+
+/* Resonances Styling */
+.resonances {
+	margin-top: 3rem;
+	padding-top: 1rem;
+	border-top: 1px solid rgba(var(--gray-light), 0.5);
+	font-size: 0.85em;
+	font-style: italic;
+	/* Make text smaller than the story */
+}
+
+.resonances h2 {
+	font-size: 1.25rem;
+	color: var(--color-secondary);
+	/* Match body text color */
+	margin-bottom: 0.8rem;
+	margin-top: 0;
+}
