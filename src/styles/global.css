@@ -150,6 +150,10 @@ pre {
 	border-radius: 8px;
 	font-family: 'Space Mono', monospace;
 	line-height: 1.5;
+	background-color: #2b2b2b;
+	color: #f8f8f2;
+	white-space: pre-wrap;
+	word-wrap: break-word;
 }
 
 pre>code {

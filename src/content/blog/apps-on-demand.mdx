@@ -1,0 +1,76 @@
+---
+title: "I built a noise-monitoring game timer for my kids in 5 AI prompts - peace in our house"
+description: "Using LLMs to build niche apps on demand"
+pubDate: "Feb 19 2026"
+tags: ["llms", "apps", "AI", "vadhbchód"]
+---
+
+I built a custom noise-monitoring game timer for my kids in 5 AI prompts. It took about an hour from first prompt to deployment, and solved a problem too niche to make financial sense for the app store. I think this is what a 'long tail' of AI-generated apps-on-demand might look like. 
+
+<img src="/boomerang_fu.avif" alt="Boomerang Fu game" />
+
+My kids love to play games, they get an hour of game time on weekend days. One of the games they got for Christmas was Boomerang Fu which is very frenetic. They already begin _quite_ hyped for their new game, and from there they ramp up to hooting things like "KILL COLD COFFEE! KILLLLL!" at the top of their lungs by the end of the hour. Our landlady lives upstairs, she never complains but we try to be considerate: much *shush*ing ensues.
+
+### The flash of inspiration
+I remembered a story from a couple of years ago from Mumbai where the police installed a "Punishing Signal" to dissuade drivers from honking at traffic lights. Every time the system registered a honk, it added time to the signal.
+
+<YouTube id="TOWs1qgMHaQ" />
+
+I basically needed that but in reverse - a timer that would show how much game time they had left, and would subtract time for loud noise.
+
+I quickly checked the app-store, no dice. This was the perfect low-stakes thing to try to vibe code, so while they were playing I gave it a shot, using Gemini 3 Pro and Antigravity.
+
+### Vibe coding
+Prompt 1:
+```text
+"Let's write a webapp. It should be a countdown timer that makes an alarm tone when out of time. The extra feature is, it listens to audio, and if the volume is greater than 95 decibels it takes 30 seconds off the time"
+```
+
+It came up with something pretty good first time given how vague this is - a ~300 line app.js, ~300 lines style.css and ~75 lines index.html webapp with no frameworks: a little animation of the waveform, a db meter. I gave it a second prompt to add the penalty counter (prompt 2), and this is what it looked like:
+
+<img src="/noisepenalty.png" alt="Noise Penalty Timer UI showing a countdown timer, a decibel meter, and a waveform animation" />
+
+First use immediately revealed it needed an auditory cue when the level was too high because the kids are going to be looking at the TV, not the timer. 
+
+Prompt 3 went down an AI rathole when Gemini got a 403 trying to fetch the sound it wanted to use, and then worked around that by creating a tone generator. In a nod to my inspiration I found a rights free sound of a horn honk and prompted it (number 4) to use that instead. Here Gemini exhibited the same <a href="https://en.wikipedia.org/wiki/Additive_bias">additive bias</a> I've seen at work - it added a function to playback the audio file, but did not clean up the now unused tone generator. 
+
+The app didn't take a wakelock so it would go to sleep while they were playing - another prompt (prompt 5) and that was fixed. 5 prompts total. The code is <a href="https://github.com/djmurphy/quiettime">here</a> for the curious, it's nothing special.
+
+Since it was a simple static webapp, I was able to zip it and deploy via <a href="https://noise-penaltyzip--davidmurphy8.replit.app">Replit</a> very quickly, and bring it up on the kids iPad (modulo the car horn, which I recall probably can't play without being triggered by direct user interaction because of webaudio limitations).[^1]
+
+It's not perfect - but it is "good enough". Just knowing that there was a thing listening reminded them to be quiet, which obviated the shushing and everyone was happier.
+
+<img src="/ai_studio_attempt.png" alt="Screenshot of AI Studio with the Quiet Time app" />
+
+AI Studio was also happy to trot a version off - this time as a single file. AI Studio makes it really easy to time how long execution is - from prompt to source was about 75 seconds - 75 seconds for a _custom_ app. 
+
+### A long tail?
+This is very interesting. The app is the kind of very niche intersection of things that either nobody on the app store has thought to make or is too niche to justify the cost of development, and useful things that an LLM can generate very quickly. That feels like a fertile spot for AI-automated app creation with no viable human competition. It's not any stretch to imagine AI being able to generate these kinds of little apps on demand as an OS or browser integration.
+
+If Apple or Google are able to do niche apps-on-demand at the OS level, they can discover gaps in the app store offering by analyzing aggregate requests - and then potentially invest in refining the most popular ones, like how Amazon uses marketplace data to decide which products to offer as Amazon Basics. The users and AI can explore the space and serve up "good enough", and once there is demonstrable demand, resources would be devoted to polish.
+
+And currently introducing a layer of human curation still seems like it will be important because, from a design perspective this is not a great app. There's some kind of colored css metaball thing in the background for no good reason, the UI for setting the timer is redundant, and for this particular usecase you could do very interesting things like remove seconds entirely (<a href="https://en.wikipedia.org/wiki/Dieter_Rams#Ten_Principles_of_Good_design">Dieter Rams would</a>[^2]), give 10, 5 and 3 minute warnings. Because phones' microphones aren't calibrated you'd need to make it easy to set the trigger level etc - half an hour with a real UX designer would make this so much better.
+
+This is getting long enough but, whereas code is a "kind problem" - you can tell if you have "solved" the request, design is a very "wicked" problem - it's not clear if every action is taking you closer or further from the ideal, it's not clear how to evaluate progress, and it's never clear if you're done.[^3]
+
+Then the potential record scratch for apps on demand: privacy. I had no qualms about opening a microphone in a room with my kids because I could read the source and know it's not sending that data anywhere. The trust dynamic changes if I'm requesting an on-demand app I can't inspect, and what if my app needs camera or data or wallet access? Figuring out how to navigate that may be an adoption challenge for apps-on-demand (or at least I'd hope it would be). Are we going to need OS level app sandboxing and user-parseable permissioning to make this work?
+
+Issues aside, this was such a short hop from an idea popping into my head to having something on my kids iPad, and all the frictions - catching wakelocks, deployment are so readily surmountable, it really feels like the cusp of a change. Not a big, revolutionary change, because I think the interesting space here is functions that not enough people care about. Optimistically, maybe a kind of democratization, a being able to have our devices do what we wish they would, without needing there to be a big market to satisfy, or having to spend months learning how to code.
+
+[^1]: I did give a bad directive, but I'd also have liked the agent to tell me my solution won't work.
+[^2]: I had that thought and then immediately wondered what would happen if I issued the same prompt with a suffix to "consider Dieter Rams' design principles". This added ~30 seconds to the execution, and it _did_ remove the seconds (ha!), but only from the timer setting UI element, and it removed the decibel meter. Design is hard.
+[^3]: Often the "best design" is the one you have when you run out of time. 
+
+<section class="resonances">
+  (In the olden days we used to link each others blogs, so I'm going to try some of that.)
+
+  A person who commented on my last post has made an <a href="https://oakreef.ie/dánlann/cló-piocó-8">8-bit cló-gaelach font</a> - which is just all kinds of cool - it includes ogham!
+
+  With ligatures on my brain, I noticed Hacker News surface this other work using ligatures to <a href="https://digitalseams.com/blog/making-a-font-with-9999-ligatures-to-display-thirteenth-century-monk-numerals">replicate the numbers used by Cystertian monks</a> - fascinating look at a different number system.
+
+  I've been obsessed with this performance on KEXP by <a href="https://www.youtube.com/watch?v=0Ssi-9wS1so">Angine de Poitrine</a>, it's been a while since I heard music so novel.
+
+  There are a lot of footnotes! I have been reading Terry Pratchett again, revisiting Small Gods is always a pleasure. I only hope his humanity rubs off as easily as his footnoting tendencies.
+
+  I'm trying to learn and practice Irish, and I wondered what the Irish for "vibe code" was. All of this is happening so quickly, I can't find an Irish language neologism for "vibe code" so I'm going with vadhbchód or <Gaeilge translation="vibe code">vadhbchód</Gaeilge> because it brings me joy to see a neologism written as it might have been by a <a href="/blog/clo-gaelach/">medieval scribe</a>.
+</section>
